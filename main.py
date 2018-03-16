@@ -18,18 +18,19 @@ with open('data.txt') as json_file:
 #pega a url de acesso aos tópicos
 for topic in data:
 	urls.append("http://reddit.com"+topic["data"]["permalink"])
-	subrredits_id.append(topic["data"]["id"])
+	topics_id.append(topic["data"]["id"])
 
 for url in urls:
 	print(url)
 	print(topics_id[counter])
 	counter = counter + 1
 	
-	with urllib.request.urlopen(url) as url_aux:
-    	data = json.loads(url_aux.read())['data']['children']
+#INÍCIO DO CÒDIGO PARA COMEÇAR A MONTAR A TABELA DE COMENTÁRIOS	
+	# with urllib.request.urlopen(url) as url_aux:
+ #    	data = json.loads(url_aux.read())['data']['children']
     	
-    	with open('comment_table.txt', 'w') as outfile:  
-	    	json.dump(data, outfile)	
+ #    	with open('comment_table.txt', 'w') as outfile:  
+	#     	json.dump(data, outfile)	
 
 
 
