@@ -34,7 +34,7 @@ for url in urls:
 	#     	json.dump(data, outfile)	
 
 analyser = SentimentAnalyser()
-print(analyser.analyseSentence('hate hate, love happy none'))
+analyser.analyseSentence('hate hate love happy none')
 
 comment_table = []
 
