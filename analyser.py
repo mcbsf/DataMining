@@ -11,12 +11,12 @@ from wnaffect.interface import WNAffect
 def printu (str):
 	print (str.encode ('utf-8'))
 
+VALUE = re.compile(r'[0-9]+\.?[0-9]*')
+SPLITTER = re.compile(r'[- \n]')
+SPECIAL_CHAR_BUT_HIF_USER = re.compile(r'(\p{P}(?<![-|(u\/)])|[\|()<>+.=´`~^¨ªº])')
+    
 class SentimentAnalyser(object):
 
-    VALUE = re.compile(r'[0-9]+\.?[0-9]*')
-    SPLITTER = re.compile(r'[- \n]')
-    SPECIAL_CHAR_BUT_HIF_USER = re.compile(r'(\p{P}(?<![-|(u\/)])|[\|()<>+.=´`~^¨ªº])')
-    
     subreddit = None
     wna = None
 
@@ -25,19 +25,6 @@ class SentimentAnalyser(object):
         
         self.wna = WNAffect('resources/wordnet-1.6/', 'resources/wn-domains-3.2/')
 
-        # emo = self.wna.get_emotion('angry', 'JJ')
-        # print(' -> '.join([emo.get_level(i).name for i in range(emo.level + 1)]))
-        # # print(emo)
-        # emo = self.wna.get_emotion('mad', 'JJ')
-        # print(' -> '.join([emo.get_level(i).name for i in range(emo.level + 1)]))
-        # # print(emo)
-        # emo = self.wna.get_emotion('annoyed', 'JJ')
-        # print(' -> '.join([emo.get_level(i).name for i in range(emo.level + 1)]))
-        # # print(emo)
-        # emo = self.wna.get_emotion('hapy', 'JJ')
-        # # print(' -> '.join([emo.get_level(i).name for i in range(emo.level + 1)]))
-        # print(emo)
-
    
     def analyseSentence(self, sentence):
         # emotions = {
@@ -45,41 +32,38 @@ class SentimentAnalyser(object):
         # }
         print ('\tBuilding paranaue')
         emotions = {}
-        
-        for (word, postag) in self._extract_tagged_words(sentence):
+
+        for (word, postag) in _extract_tagged_words(sentence):
             # printu(term)
             
-            for postag in self.subreddit.get_term_tags(word):
-                # printu(postag)
                 emotion = self.wna.get_emotion(word, postag)
                 
                 if emotion is not None:
                     # print ('\t->', self.subreddit.get_term_time(term, postag))
-                    
+                    emotion = str(emotion.get_level(5))
                     if emotion not in emotions:
                         emotions[emotion] = 1
+
                     
                     else:
                         emotions[emotion] = emotions[emotion]+1
 
+        return emotions
 
-        print(time_emotion)
-                    
-        return time_emotion
 
-    def _extract_tagged_words(text):
-        values = [] # find use for values
-        
-        def fold_num(match):
-            values.append(match)
-            return 'NUM' + str(len(values)-1)
+def _extract_tagged_words(text):
+    values = [] # find use for values
+    
+    def fold_num(match):
+        values.append(match)
+        return 'NUM' + str(len(values)-1)
 
-        text = re.sub(VALUE, fold_num, text)
-        text = re.sub(SPECIAL_CHAR_BUT_HIF_USER, _capture_replace, text)
-        words = [word for word in SPLITTER.split(text) if word]
-        tagged_words = nltk.pos_tag(words)
-        
-        return tagged_words
+    text = re.sub(VALUE, fold_num, text)
+    text = re.sub(SPECIAL_CHAR_BUT_HIF_USER, _capture_replace, text)
+    words = [word for word in SPLITTER.split(text) if word]
+    tagged_words = nltk.pos_tag(words)
+    
+    return tagged_words
 
-    def _capture_replace (match):
-        return ' ' + match.group(1) + ' '
+def _capture_replace (match):
+    return ' ' + match.group(1) + ' '
