@@ -8,7 +8,7 @@ from analyser import SentimentAnalyser
 
 # with open('data.txt', 'w') as outfile:  
 #     json.dump(data, outfile)
-
+'''
 urls = []
 topics_id = []
 counter = 0
@@ -32,7 +32,7 @@ for url in urls:
     	
  #    	with open('comment_table.txt', 'w') as outfile:  
 	#     	json.dump(data, outfile)	
-
+'''
 analyser = SentimentAnalyser()
 print(analyser.analyseSentence('hate hate, love happy none'))
 
