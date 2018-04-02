@@ -36,17 +36,18 @@ class SentimentAnalyser(object):
         for (word, postag) in _extract_tagged_words(sentence):
             # printu(term)
             
-                emotion = self.wna.get_emotion(word, postag)
-                
-                if emotion is not None:
-                    # print ('\t->', self.subreddit.get_term_time(term, postag))
-                    emotion = str(emotion.get_level(5))
-                    if emotion not in emotions:
-                        emotions[emotion] = 1
+            
+            emotion = self.wna.get_emotion(word, postag)
+            
+            if emotion is not None:
+                # print ('\t->', self.subreddit.get_term_time(term, postag))
+                emotion = str(emotion.get_level(4))
+                if emotion not in emotions:
+                    emotions[emotion] = 1
 
-                    
-                    else:
-                        emotions[emotion] = emotions[emotion]+1
+                
+                else:
+                    emotions[emotion] = emotions[emotion]+1
 
         return emotions
 
@@ -59,11 +60,13 @@ def _extract_tagged_words(text):
         return 'NUM' + str(len(values)-1)
 
     text = re.sub(VALUE, fold_num, text)
-    text = re.sub(SPECIAL_CHAR_BUT_HIF_USER, _capture_replace, text)
+    # text = re.sub(SPECIAL_CHAR_BUT_HIF_USER, _capture_replace, text)
     words = [word for word in SPLITTER.split(text) if word]
+    words = [word for word in words if word.isalpha()]
     tagged_words = nltk.pos_tag(words)
     
     return tagged_words
 
 def _capture_replace (match):
+
     return ' ' + match.group(1) + ' '
