@@ -1,4 +1,5 @@
 import urllib.request, json 
+import pandas as pd
 from analyser import SentimentAnalyser
 
 #pega a o json dentro da url e bota todos os tópicos mais populares dentro da variável "data"
@@ -30,7 +31,36 @@ for url in urls:
  #    	with open('comment_table.txt', 'w') as outfile:  
 	#     	json.dump(data, outfile)	
 '''
-analyser = SentimentAnalyser()
-analyser.analyseSentence('hate hate love happy none')
+df = pd.read_csv('csv/comments_data', sep='\t')
+
+emotions = []
+
+for x in df['comment']:
+	analyser = SentimentAnalyser()
+	dic_emotion = analyser.analyseSentence(x)
+	str_emotion = ""
+	positive = 0
+	negative = 0
+
+	for (emotion, value) in dic_emotion.items():
+		print(emotion)
+		
+		if emotion in 'positive-emotion':
+			positive = value
+
+		elif emotion in "negative-emotion":
+			negative = value
+
+	emotion_value = str(positive - negative)
+	print(emotion_value)
+	emotions.append(emotion_value)
+	
+	
+d = {'id': df['id'], 'subreddit_id': df['subreddit_id'], 'subreddit': df['subreddit'], 'date_collect': df['date_collect'], 'comment': df['comment'], 'permalink': df['permalink'], 'created': df['created'], 'ups': df['ups'], 'score': df['score'], 'author': df['author'], 'parent_id': df['parent_id'], 'sentiments': emotions}
+df = pd.DataFrame(data=d)
+df.to_csv("csv/comments_data_and_sentiments.csv", sep='\t', encoding='utf-8')
+
+
+
 
 comment_table = []
