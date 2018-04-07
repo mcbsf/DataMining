@@ -34,6 +34,7 @@ for url in urls:
 df = pd.read_csv('csv/comments_data', sep='\t')
 
 emotions = []
+
 for x in df['comment']:
 	analyser = SentimentAnalyser()
 	dic_emotion = analyser.analyseSentence(x)
@@ -55,9 +56,9 @@ for x in df['comment']:
 	emotions.append(emotion_value)
 	
 	
-df['comment'] = emotions
+d = {'id': df['id'], 'subreddit_id': df['subreddit_id'], 'subreddit': df['subreddit'], 'date_collect': df['date_collect'], 'comment': df['comment'], 'permalink': df['permalink'], 'created': df['created'], 'ups': df['ups'], 'score': df['score'], 'author': df['author'], 'parent_id': df['parent_id'], 'sentiments': emotions}
+df = pd.DataFrame(data=d)
 df.to_csv("csv/comments_data_and_sentiments.csv", sep='\t', encoding='utf-8')
-
 
 
 
