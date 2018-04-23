@@ -33,6 +33,7 @@ class SentimentAnalyser(object):
 
     subreddit = None
     wna = None
+    person_comment = {}
 
     def __init__(self):
        
@@ -65,6 +66,25 @@ class SentimentAnalyser(object):
                     emotions[emotion] = emotions[emotion]+1
 
         return emotions
+
+    def build_person_comment(self, df):
+        authors = []
+        comments = []
+        counter = 0
+        
+        for author in df['author']:
+            authors.append(author)
+ 
+        for comment in df['comment']:
+            comments.append(comment)
+        person_comments = {}
+        for author in authors:
+            if author not in person_comments:
+                person_comments[author] = []
+            person_comments[author].append(comments[counter])
+                
+        
+        self.person_comment = person_comments
 
 def cleaner_builder(tagged_words, lower_words=True, fold_numbers=False, remove_stopwords=False, do_stemming=True, do_lemmatizing=False):
     
